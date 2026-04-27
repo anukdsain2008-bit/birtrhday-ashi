@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Ashi ❤️</title>
+
+<style>
+body {
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background: radial-gradient(circle at top, #1a1a1a, #000000);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  color:#fff;
+}
+
+.page {
+  display:none;
+  text-align:center;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  padding:20px;
+  border-radius:20px;
+  width:90%;
+  max-width:360px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+
+.page.active { display:block; animation:fadeIn 1.5s; }
+
+h1 { color:#ff4e50; }
+
+img { width:100%; border-radius:15px; margin-top:10px; }
+
+button {
+  margin-top:15px; padding:10px 20px; border:none;
+  border-radius:10px; background:#ff4e50; color:white;
+}
+
+@keyframes fadeIn {
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+canvas { position:fixed; top:0; left:0; pointer-events:none; }
+
+.typing {
+  border-right:2px solid #ff4e50;
+  white-space:nowrap; overflow:hidden;
+}
+
+.heart {
+  position:fixed;
+  font-size:20px;
+  animation:float 1.5s linear forwards;
+}
+
+@keyframes float {
+  0% {opacity:1; transform:translateY(0) scale(1);} 
+  100% {opacity:0; transform:translateY(-100px) scale(1.5);} 
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="page active" id="page1">
+  <h1>🎂 Happy Birthday Ashi ❤️</h1>
+  <p id="typingText" class="typing"></p>
+  <button onclick="nextPage(2)">Next ➡️</button>
+</div>
+
+<div class="page" id="page2">
+  <h1>💌 For You</h1>
+  <p>You are my happiness, my love, my everything 💖</p>
+  <img src="ashi.jpg">
+  <button onclick="nextPage(3)">Next ➡️</button>
+</div>
+
+<div class="page" id="page3">
+  <h1>🎉 Celebrate</h1>
+  <p>I love you forever ❤️</p>
+  <button onclick="startSurprise()">Celebrate 🎊</button>
+</div>
+
+<audio id="song" src="birthday.mp3"></audio>
+
+<script>
+function nextPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+page).classList.add('active');
+}
+
+// Typing effect
+const text = "Every moment with you feels like a beautiful dream... 💕";
+let i = 0;
+(function typeEffect(){
+  if(i < text.length){
+    document.getElementById("typingText").innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typeEffect, 50);
+  }
+})();
+
+// Confetti
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function createConfetti(){
+  for(let i=0;i<200;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*6,
+      d:Math.random()*50,
+      color:`hsl(${Math.random()*360},100%,50%)`
+    });
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.fillStyle=p.color;
+    ctx.fillRect(p.x,p.y,p.r,p.r);
+    p.y+=2;
+    if(p.y>canvas.height) p.y=0;
+  });
+  requestAnimationFrame(draw);
+}
+
+function startSurprise(){
+  createConfetti();
+  draw();
+  document.getElementById('song').play();
+}
+
+// ❤️ Tap anywhere hearts effect
+function createHeart(x, y) {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.innerHTML = '❤️';
+  heart.style.left = x + 'px';
+  heart.style.top = y + 'px';
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 1500);
+}
+
+// Mouse click
+document.addEventListener('click', (e) => {
+  createHeart(e.clientX, e.clientY);
+});
+
+// Touch for mobile
+document.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+  createHeart(touch.clientX, touch.clientY);
+});
+</script>
+
+</body>
+</html>
